@@ -34,17 +34,19 @@ The job will be runned by the first node that gets the job payroll. Note that jo
 Job results can be found at:
 
 ```
-curl -X GET http://localhost:8500/v1/kv/jdone_jid/jobs/<job id>
+curl -X GET http://localhost:8500/v1/kv/jdone_jid/jobs/<job id>?raw
 
 or
 
-curl -X GET http://localhost:8500/v1/kv/queues/<node name>/jdone_jid/jobs/<job id>
+curl -X GET http://localhost:8500/v1/kv/queues/<node name>/jdone_jid/jobs/<job id>?raw
 ```
 
 Current extra job parameters are:
 
 ```
-{ "Command": "command to run", "NoWait": true|false }
+{ "Command": "command to run", 
+  "NoWait": true|false, 
+  "Timeout": <timeout in seconds default 60 seconds> }
 ```
 
 Thats all for now. I accept further development suggestions. 

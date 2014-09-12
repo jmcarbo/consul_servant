@@ -19,6 +19,9 @@ import (
   "io/ioutil"
 )
 
+const (
+  execution_timeout = 60
+)
 var (
   join_ip string
   server  bool
@@ -74,6 +77,9 @@ type Job struct {
   EndTime int64
   StartTimeStr string
   EndTimeStr string
+  ExecutionNode string
+  Timeout int64 //Timeout in seconds
+  ExitErrors string
 }
 
 func processQueue(qname string, wg *sync.WaitGroup) {
@@ -161,6 +167,7 @@ func processQueue(qname string, wg *sync.WaitGroup) {
           job, err := decodeJob(string(pair.Value))
           job.StartTime = time.Now().UnixNano()
           job.StartTimeStr = fmt.Sprintln(time.Now())
+          job.ExecutionNode = agent_name 
           if err != nil {
             log.Println("Error decoding job json")
             job.Output = "Error decoding job json"
@@ -171,13 +178,17 @@ func processQueue(qname string, wg *sync.WaitGroup) {
               sss.Stderr = ioutil.Discard
               sss.Start()
             } else {
-              sss := sh.Command("/bin/bash", "-c", string(job.Command))
-              out, stderr, _ := OutputAll(sss)
+              sss := sh.Command("/bin/bash", "-c", string(job.Command)).SetTimeout(execution_timeout * time.Second)
+              out, stderr, err := OutputAll(sss)
               if string(out) != "" {
                 log.Printf("Output job %s **** %s\n", pair.Key, string(out))
               }
               if string(stderr) != "" {
                 log.Printf("Error job %s **** %s\n", pair.Key, string(stderr))
+              }
+              if err != nil {
+                log.Printf("Exit error %v", err)
+                job.ExitErrors = fmt.Sprintf("%v", err)
               }
               job.Output = string(out)
               job.OutputErrors = string(stderr)
