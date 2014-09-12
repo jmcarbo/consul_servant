@@ -7,6 +7,7 @@ import (
   "github.com/jmcarbo/consul_servant/job"
   "fmt"
   "encoding/json"
+  "github.com/nu7hatch/gouuid"
 )
 
 var (
@@ -39,24 +40,57 @@ func main() {
       Value: "english",
       Usage: "language for the greeting",
     },
+    cli.StringFlag{
+      Name: "action,a",
+      Value: "",
+      Usage: "Command to execute",
+    },
   }
+
+  startFlags := []cli.Flag {
+    cli.StringFlag{
+      Name: "command,c",
+      Value: "",
+      Usage: "Command to execute",
+    },
+  }
+
   app.Commands = []cli.Command{
     {
       Name:      "start",
       ShortName: "s",
       Usage:     "Start a job in the cluster",
+      SkipFlagParsing: false,
+      Flags: startFlags,
       Action: func(c *cli.Context) {
-        j, err := job.LoadJobFromFile(c.Args().First())
-        if err != nil {
-          fmt.Printf("Error reading job file: %s", err) 
-        } else {
-          p := &consulapi.KVPair{Key: "jobs/"+j.ID, Value: j.Encode() }
+        if c.String("command") != "" {
+          id := c.Args().First()
+          if id == "" {
+            u, _:=uuid.NewV4()
+            id = u.String()
+          }
+          jsn := fmt.Sprintf("{ \"ID\": \"%s\", \"Command\": \"%s\" }", id, c.String("command"))
+          p := &consulapi.KVPair{Key: "jobs/"+id, Value: []byte(jsn) }
           _, err := kv.Put(p, nil)
           if err != nil {
             fmt.Printf("Error: %s\n", err)
             panic("Error scheduling job")
           }
-          fmt.Printf("scheduled job: %s\n", c.Args().First())
+          fmt.Printf("scheduled job: %s\n", id)
+
+        } else {
+          j, err := job.LoadJobFromFile(c.Args().First())
+          if err != nil {
+            fmt.Printf("Error reading job file: %s", err) 
+          } else {
+            p := &consulapi.KVPair{Key: "jobs/"+j.ID, Value: j.Encode() }
+            _, err := kv.Put(p, nil)
+            if err != nil {
+              fmt.Printf("Error: %s\n", err)
+              panic("Error scheduling job")
+            }
+            fmt.Printf("scheduled job: %s / %s\n", c.Args().First(), j.ID)
+          }
         }
       },
     },

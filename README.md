@@ -10,6 +10,10 @@ Run **make run_client** to start a container shell. Inside the container shell r
 You now have a 4 node consul cluster. Then you are ready to start using the CLI enviroment via consul_visa. Try:
 
 ```
+./consul_visa start -c "echo hello world" job1
+
+or from a file
+
 echo { "ID": "job1", Command": "echo hello world" } >job1.job
 ./consul_visa start job1.job
 

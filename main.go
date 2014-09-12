@@ -310,6 +310,9 @@ func main() {
   session = client.Session()
   agent = client.Agent()
   agent_name, _ = agent.NodeName()
+  if agent_name == "" {
+    agent_name, _ = os.Hostname()
+  }
 
   log.Printf("Consul Servant connected to %s", agent_name)
 
