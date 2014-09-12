@@ -11,11 +11,15 @@ You now have a 4 node consul cluster. Then you are ready to start using the CLI 
 
 ```
 echo { "ID": "job1", Command": "echo hello world" } >job1.job
-consul_visa start job1.job
+./consul_visa start job1.job
 
 ```
 
-The job will be runned in any of the 4 nodes in the cluster.
+The job will be runned in any of the 4 nodes in the cluster. To see job execution status run:
+
+```
+./consul_visa show job1
+```
 
 
 # Low level use

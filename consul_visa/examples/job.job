@@ -1,4 +1,6 @@
-{ "Command": "docker ps", 
+{ 
+  "ID": "job1"
+  "Command": "docker ps", 
   "Timeout": 3, 
   "Services": [ { "ID": "blu3", "Name": "blu3",  "Check": {"TTL": "23s"}} ] 
 }

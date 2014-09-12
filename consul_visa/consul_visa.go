@@ -6,6 +6,7 @@ import (
   "github.com/armon/consul-api"
   "github.com/jmcarbo/consul_servant/job"
   "fmt"
+  "encoding/json"
 )
 
 var (
@@ -56,6 +57,27 @@ func main() {
             panic("Error scheduling job")
           }
           fmt.Printf("scheduled job: %s\n", c.Args().First())
+        }
+      },
+    },
+    {
+      Name:      "show",
+      ShortName: "w",
+      Usage:     "Show job status",
+      Action: func(c *cli.Context) {
+        p, _, err := kv.Get("jdone_jid/jobs/"+c.Args().First(), nil)
+        if err != nil {
+          panic(err) 
+        }
+        if p != nil {
+          var dat map[string] interface{}
+          if err := json.Unmarshal(p.Value, &dat); err != nil {
+            panic(err)
+          }
+          out, _ := json.MarshalIndent(dat,"", "    ")
+          fmt.Printf("Job status: %s\n", string(out))
+        } else {
+          fmt.Printf("Job not found\n")
         }
       },
     },
