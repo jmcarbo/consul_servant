@@ -20,7 +20,7 @@ import (
 )
 
 const (
-  execution_timeout = 60
+  execution_timeout = time.Duration(60)
 )
 var (
   join_ip string
@@ -69,17 +69,32 @@ func launchConsul() {
   cmd.Wait()
 }
 
+type Check struct {
+  Script string
+  Interval string
+  TTL string
+}
+
+type Service struct {
+  ID string
+  Name string
+  Tags []string
+  Port int
+  Check Check
+}
 
 type Job struct {
   Name, Command, Output, OutputErrors string
+  Type string // default is "shell"
   NoWait bool
   StartTime int64
   EndTime int64
   StartTimeStr string
   EndTimeStr string
   ExecutionNode string
-  Timeout int64 //Timeout in seconds
+  Timeout time.Duration //Timeout in seconds
   ExitErrors string
+  Services []Service
 }
 
 func processQueue(qname string, wg *sync.WaitGroup) {
@@ -178,7 +193,11 @@ func processQueue(qname string, wg *sync.WaitGroup) {
               sss.Stderr = ioutil.Discard
               sss.Start()
             } else {
-              sss := sh.Command("/bin/bash", "-c", string(job.Command)).SetTimeout(execution_timeout * time.Second)
+              lapsus := execution_timeout
+              if job.Timeout > 0 {
+                lapsus = job.Timeout
+              }
+              sss := sh.Command("/bin/bash", "-c", string(job.Command)).SetTimeout(lapsus * time.Second)
               out, stderr, err := OutputAll(sss)
               if string(out) != "" {
                 log.Printf("Output job %s **** %s\n", pair.Key, string(out))
@@ -196,6 +215,22 @@ func processQueue(qname string, wg *sync.WaitGroup) {
           } 
           job.EndTime = time.Now().UnixNano() 
           job.EndTimeStr = fmt.Sprintln(time.Now())
+          for _,s := range job.Services {
+            log.Printf("Adding check to service %#v", s.Check)
+            var check *consulapi.AgentServiceCheck
+            if (s.Check.Script != "") || (s.Check.TTL != "")  {
+              check = &consulapi.AgentServiceCheck{ Script: s.Check.Script, Interval: s.Check.Interval, TTL: s.Check.TTL }              
+              err=agent.ServiceRegister(&consulapi.AgentServiceRegistration { ID: s.ID, Name: s.Name, Tags: s.Tags, Port: s.Port, Check: check })
+            } else {
+              err=agent.ServiceRegister(&consulapi.AgentServiceRegistration { ID: s.ID, Name: s.Name, Tags: s.Tags, Port: s.Port  })
+            }
+
+            if err!= nil {
+              log.Printf("Error creating service %s: %s", s.Name, err)
+            } else {
+              log.Printf("Service %s created", s.Name)
+            }
+          }
           ori_key := pair.Key
           pair.Key = strings.Replace(pair.Key, qname, "jdone/"+qname, 1) + "/" + agent_name
 

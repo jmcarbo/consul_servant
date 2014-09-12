@@ -46,7 +46,16 @@ Current extra job parameters are:
 ```
 { "Command": "command to run", 
   "NoWait": true|false, 
-  "Timeout": <timeout in seconds default 60 seconds> }
+  "Timeout": <timeout in seconds default 60 seconds>,
+  "Type": "<shell| ...>",
+  "Services": [ {"ID": "service id", "Name": "service Name", ... }]
+  }
+```
+
+Job with service registration:
+
+```
+curl -X PUT -d '{"Command": "docker ps", "Timeout": 3, "Services": [ { "ID": "blu3", "Name": "blu3", "Port": "80", "Check": {"TTL": "23s"}} ] }' http://localhost:8500/v1/kv/jobs/61
 ```
 
 Thats all for now. I accept further development suggestions. 
