@@ -70,6 +70,10 @@ func launchConsul() {
 type Job struct {
   Name, Command, Output, OutputErrors string
   NoWait bool
+  StartTime int64
+  EndTime int64
+  StartTimeStr string
+  EndTimeStr string
 }
 
 func processQueue(qname string, wg *sync.WaitGroup) {
@@ -155,6 +159,8 @@ func processQueue(qname string, wg *sync.WaitGroup) {
         if (ses == pair.Session)  {
           log.Printf("Executing %s **** %s\n", pair.Key, pair.Value)
           job, err := decodeJob(string(pair.Value))
+          job.StartTime = time.Now().UnixNano()
+          job.StartTimeStr = fmt.Sprintln(time.Now())
           if err != nil {
             log.Println("Error decoding job json")
             job.Output = "Error decoding job json"
@@ -176,7 +182,9 @@ func processQueue(qname string, wg *sync.WaitGroup) {
               job.Output = string(out)
               job.OutputErrors = string(stderr)
             }
-          }
+          } 
+          job.EndTime = time.Now().UnixNano() 
+          job.EndTimeStr = fmt.Sprintln(time.Now())
           ori_key := pair.Key
           pair.Key = strings.Replace(pair.Key, qname, "jdone/"+qname, 1) + "/" + agent_name
 

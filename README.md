@@ -34,11 +34,11 @@ The job will be runned by the first node that gets the job payroll. Note that jo
 Job results can be found at:
 
 ```
-curl -X GET http://localhost:8500/v1/kv/jdone_jid/<job id>
+curl -X GET http://localhost:8500/v1/kv/jdone_jid/jobs/<job id>
 
 or
 
-curl -X GET http://localhost:8500/v1/kv/queues/<node name>/jdone_jid/<job id>
+curl -X GET http://localhost:8500/v1/kv/queues/<node name>/jdone_jid/jobs/<job id>
 ```
 
 Current extra job parameters are:
