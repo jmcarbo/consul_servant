@@ -1,0 +1,5 @@
+{ 
+  "ID": "MyJob3",
+  "Command": "docker ps", 
+  "Timeout": 3 
+}

@@ -84,7 +84,7 @@ type Service struct {
 }
 
 type Job struct {
-  Name, Command, Output, OutputErrors string
+  ID, Name, Command, Output, OutputErrors string
   Type string // default is "shell"
   NoWait bool
   StartTime int64

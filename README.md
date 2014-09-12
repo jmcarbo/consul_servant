@@ -1,6 +1,26 @@
 Consul Servant is a Consul based cluster manager and orchestrator. It is a single executable that
 installs consul in the current directory and starts a new cluster:
 
+# Quick start
+Run **make start_cluster** to run a sample docker cluster. Note that consul_servant is no limited to docker at all
+but this is a quick way to test the environment.
+
+Run **make run_client** to start a container shell. Inside the container shell run **./consul_servant -join $CIP &**
+
+You now have a 4 node consul cluster. Then you are ready to start using the CLI enviroment via consul_visa. Try:
+
+```
+echo { "ID": "job1", Command": "echo hello world" } >job1.job
+consul_visa start job1.job
+
+```
+
+The job will be runned in any of the 4 nodes in the cluster.
+
+
+# Low level use
+
+
 ```
 
 ./consul_servant

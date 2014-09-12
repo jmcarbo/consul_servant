@@ -1,0 +1,4 @@
+{ 
+  "ID": "ajob4",
+  "Command": "ip=$(dig @127.0.0.1 -p 8600 +short JMCAMBPro2014.local.node.consul); echo $ip"
+}
