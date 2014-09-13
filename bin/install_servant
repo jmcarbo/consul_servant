@@ -1,7 +1,8 @@
 unamestr=`uname` 
-
+echo "Installing consul_servant"
 if [[ "$unamestr" == 'Linux' ]] 
 then
+  echo "Linux detected"
   wget -nc -q https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip; 
   wget -nc -q https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_servant_linux_amd64
   chmod +x consul_servant_linux_amd64
@@ -11,6 +12,7 @@ then
   mv consul_visa_linux_amd64 consul_visa
 elif [[ \"$unamestr\" == 'Darwin' ]] 
 then 
+  echo "Darwin detected"
   wget -nc -q https://dl.bintray.com/mitchellh/consul/0.4.0_darwin_amd64.zip; 
   wget -nc -q https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_servant_darwin_amd64
   chmod +x consul_servant_darwin_amd64
@@ -20,6 +22,7 @@ then
   mv consul_visa_darwin_amd64 consul_visa
 fi; 
 
-unzip -q 0*
+unzip -o -q 0*
 rm 0*
 
+echo "Install completed"
