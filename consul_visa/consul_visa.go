@@ -66,6 +66,10 @@ func main() {
       Value: "",
       Usage: "Choose node to execute schedule command in",
     },
+    cli.BoolFlag{
+      Name: "all",
+      Usage: "Run in all nodes",
+    },
   }
 
   app.Commands = []cli.Command{
@@ -117,13 +121,30 @@ func main() {
             id = u.String()
           }
           jsn := fmt.Sprintf("{ \"ID\": \"%s\", \"Command\": \"%s\" }", id, c.String("command"))
-          p := &consulapi.KVPair{Key: queue+"/"+id, Value: []byte(jsn) }
-          _, err := kv.Put(p, nil)
-          if err != nil {
-            fmt.Printf("Error: %s\n", err)
-            panic("Error scheduling job")
+          if c.Bool("all") == true {
+            members, err := agent.Members(false)
+            if err != nil {
+              panic("err: can't list members\n")
+            }
+            for _, member := range members {
+              queue = "queues/"+member.Name
+              p := &consulapi.KVPair{Key: queue+"/"+id, Value: []byte(jsn) }
+              _, err := kv.Put(p, nil)
+              if err != nil {
+                fmt.Printf("Error: %s\n", err)
+                panic("Error scheduling job")
+              }
+              fmt.Printf("scheduled job: %s in %s\n", id, member.Name)
+            }
+          }else {
+            p := &consulapi.KVPair{Key: queue+"/"+id, Value: []byte(jsn) }
+            _, err := kv.Put(p, nil)
+            if err != nil {
+              fmt.Printf("Error: %s\n", err)
+              panic("Error scheduling job")
+            }
+            fmt.Printf("scheduled job: %s\n", id)
           }
-          fmt.Printf("scheduled job: %s\n", id)
 
         } else {
           j, err := job.LoadJobFromFile(c.Args().First())
