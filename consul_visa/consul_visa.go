@@ -41,6 +41,7 @@ func main() {
   app:=cli.NewApp()
   app.Name = "consul_visa"
   app.Usage = "access consul_servant cluster from the command line"
+  app.Version = "0.0.1"
   app.Flags = []cli.Flag {
     cli.StringFlag{
       Name: "lang",

@@ -1,0 +1,17 @@
+unamestr=`uname` 
+
+if [[ "$unamestr" == 'Linux' ]] 
+then
+  wget -q https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip; 
+  wget https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_servant_linux_amd64
+  chmod +x consul_servant_linux_amd64
+elif [[ \"$unamestr\" == 'Darwin' ]] 
+then 
+  wget -q https://dl.bintray.com/mitchellh/consul/0.4.0_darwin_amd64.zip; 
+  wget https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_servant_darwin_amd64
+  chmod +x consul_servant_darwin_amd64
+fi; 
+
+unzip -q 0*
+rm 0*
+

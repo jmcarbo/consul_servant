@@ -1,6 +1,8 @@
 Consul Servant is a Consul based cluster manager and orchestrator. It is a single executable that
 installs consul in the current directory and starts a new cluster:
 
+**VERY ALPHA STAGE, use at your own risk**
+
 # Architecture
 
 Consul Servant allows to build an arbitrary big cluster based in Consul and adds job management queues
@@ -39,6 +41,12 @@ and a command line client (consul_visa)
       XXX               XX                                                                                                  
         XXXXXXXXXXXXXXXXX                                                                                                   
 ```
+
+# Install
+
+Execute `curl https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/install | bash` in each node you whant to 
+integrate in the cluster. 
+Consul_servant is tested to run in Ubuntu and OSX.
 
 # Quick start
 Run `make start_cluster` to run a sample docker cluster. Note that consul_servant is no limited to docker at all
