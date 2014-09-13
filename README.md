@@ -1,6 +1,45 @@
 Consul Servant is a Consul based cluster manager and orchestrator. It is a single executable that
 installs consul in the current directory and starts a new cluster:
 
+# Architecture
+
+Consul Servant allows to build an arbitrary big cluster based in Consul and adds job management queues
+and a command line client (consul_visa)
+
+```
++---------------------------------------+             +----------------------------------------+                            
+|                                       |             |                                        |                            
+|                                       |             |                                        |                            
+|   +-------------------------------+   |             |    +---------------------------------+ |                            
+|   |                               |   |             |    |                                 | |                            
+|   |  Consul_servant               |   |             |    |  Consul_servant                 | |                            
+|   |                               |   |             |    |                                 | |                            
+|   |                               |   |             |    |                                 | |                            
+|   |                               |   |             |    |                                 | |   Any number of nodes
+|   |             +-------------+   |   |             |    |               +---------------+ | |                            
+|   |             |             |   |   |             |    |               |               | | |                            
+|   |             |    Consul  +--------------------------------------------+    Consul    | | |                            
+|   |             |             |   |   |             |    |               |               | | |                            
+|   |   ^         +-------------+   |   |             |    |               +---------------+ | |                            
+|   |   |                           |   |             |    +---------------+---------------+-+ |                            
+|   +-------------------------------+   |             |                                        |                            
++---+-------------------------------+---+             +----------------------------------------+                            
+        |                                                                                                                   
+        |    Node1                                                        Node2                                             
+        |                                                                                                                   
+        |                                                                                                                   
+        |                                                                                                                   
+        |                                                                                                                   
+        |                                                                                                                   
+        |                                                                                                                   
+       X+XXXXXXXX XXXXXXXX                                                                                                  
+      XX                 XX                                                                                                 
+     X Consul_visa CLI    X                                                                                                 
+     X                   XX                                                                                                 
+      XXX               XX                                                                                                  
+        XXXXXXXXXXXXXXXXX                                                                                                   
+```
+
 # Quick start
 Run `make start_cluster` to run a sample docker cluster. Note that consul_servant is no limited to docker at all
 but this is a quick way to test the environment.
@@ -114,3 +153,5 @@ curl -X PUT -d '{"Command": "docker ps", "Timeout": 3, "Services": [ { "ID": "bl
 ```
 
 Thats all for now. I accept further development suggestions. 
+
+
