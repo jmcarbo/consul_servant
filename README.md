@@ -2,7 +2,7 @@ Consul Servant is a Consul based cluster manager and orchestrator. It is a singl
 installs consul in the current directory and starts a new cluster:
 
 # Quick start
-Run **make start_cluster** to run a sample docker cluster. Note that consul_servant is no limited to docker at all
+Run `make start_cluster` to run a sample docker cluster. Note that consul_servant is no limited to docker at all
 but this is a quick way to test the environment.
 
 Run **make run_client** to start a container shell. Inside the container shell run **./consul_servant -join $CIP &**
@@ -24,6 +24,32 @@ The job will be runned in any of the 4 nodes in the cluster. To see job executio
 ```
 ./consul_visa show job1
 ```
+
+I borrowed some commands from github.com/bryanl/consulcli and added them to consul_visa. A list of consul visa commands:
+
+  NAME:
+    consul_visa - access consul_servant cluster from the command line
+
+  USAGE:
+    consul_visa [global options] command [command options] [arguments...]
+
+  VERSION:
+    0.0.0
+
+  COMMANDS:
+    kv-get	get an item from the kv store
+    kv-keys	list keys in the kv store
+    kv-list	list items in the kv store
+    kv-deltree	delete trees in the kv store
+    node-eject	eject node
+    node-list	list nodes
+    start, s	Start a job in the cluster
+    show, w	Show job status
+    help, h	Shows a list of commands or help for one command
+
+  GLOBAL OPTIONS:
+    --help, -h		show help
+    --version, -v	print the version
 
 
 # Low level use

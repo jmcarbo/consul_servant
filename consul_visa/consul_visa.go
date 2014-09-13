@@ -5,6 +5,8 @@ import (
   "github.com/codegangsta/cli"
   "github.com/armon/consul-api"
   "github.com/jmcarbo/consul_servant/job"
+  "github.com/jmcarbo/consul_servant/key"
+  "github.com/jmcarbo/consul_servant/node"
   "fmt"
   "encoding/json"
   "github.com/nu7hatch/gouuid"
@@ -30,6 +32,11 @@ func init () {
   agent_name, _ = agent.NodeName()
 }
 
+
+func help() {
+	fmt.Println("kvlist, kvget, kvkeys")
+}
+
 func main() {
   app:=cli.NewApp()
   app.Name = "consul_visa"
@@ -53,9 +60,44 @@ func main() {
       Value: "",
       Usage: "Command to execute",
     },
+    cli.StringFlag{
+      Name: "node,n",
+      Value: "",
+      Usage: "Choose node to execute schedule command in",
+    },
   }
 
   app.Commands = []cli.Command{
+		{
+			Name:   "kv-get",
+			Usage:  "get an item from the kv store",
+			Action: key.Kvget,
+		},
+		{
+			Name:   "kv-keys",
+			Usage:  "list keys in the kv store",
+			Action: key.Kvkeys,
+		},
+		{
+			Name:   "kv-list",
+			Usage:  "list items in the kv store",
+			Action: key.Kvlist,
+		},
+		{
+			Name:   "kv-deltree",
+			Usage:  "delete trees in the kv store",
+			Action: key.KvDelTree,
+		},
+		{
+			Name:   "node-eject",
+			Usage:  "eject node",
+			Action: node.NodeEject,
+		},
+		{
+			Name:   "node-list",
+			Usage:  "list nodes",
+			Action: node.NodeList,
+		},
     {
       Name:      "start",
       ShortName: "s",
@@ -63,6 +105,10 @@ func main() {
       SkipFlagParsing: false,
       Flags: startFlags,
       Action: func(c *cli.Context) {
+        queue := "jobs"
+        if c.String("node") != "" {
+          queue = "queues/"+c.String("node")
+        }
         if c.String("command") != "" {
           id := c.Args().First()
           if id == "" {
@@ -70,7 +116,7 @@ func main() {
             id = u.String()
           }
           jsn := fmt.Sprintf("{ \"ID\": \"%s\", \"Command\": \"%s\" }", id, c.String("command"))
-          p := &consulapi.KVPair{Key: "jobs/"+id, Value: []byte(jsn) }
+          p := &consulapi.KVPair{Key: queue+"/"+id, Value: []byte(jsn) }
           _, err := kv.Put(p, nil)
           if err != nil {
             fmt.Printf("Error: %s\n", err)
@@ -83,7 +129,7 @@ func main() {
           if err != nil {
             fmt.Printf("Error reading job file: %s", err) 
           } else {
-            p := &consulapi.KVPair{Key: "jobs/"+j.ID, Value: j.Encode() }
+            p := &consulapi.KVPair{Key: queue+"/"+j.ID, Value: j.Encode() }
             _, err := kv.Put(p, nil)
             if err != nil {
               fmt.Printf("Error: %s\n", err)
@@ -98,8 +144,13 @@ func main() {
       Name:      "show",
       ShortName: "w",
       Usage:     "Show job status",
+      Flags: startFlags,
       Action: func(c *cli.Context) {
-        p, _, err := kv.Get("jdone_jid/jobs/"+c.Args().First(), nil)
+        queue := "jdone_jid/jobs/"
+        if c.String("node") != "" {
+          queue = "jdone_jid/queues/"+c.String("node")+"/"
+        }
+        p, _, err := kv.Get(queue+c.Args().First(), nil)
         if err != nil {
           panic(err) 
         }
