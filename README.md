@@ -44,7 +44,7 @@ and a command line client (consul_visa)
 
 # Install
 
-Execute `curl https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/install | bash` in each node you whant to 
+Execute `curl https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/install_servant | bash` in each node you whant to 
 integrate in the cluster. 
 Consul_servant is tested to run in Ubuntu and OSX.
 
