@@ -27,6 +27,7 @@ The job will be runned in any of the 4 nodes in the cluster. To see job executio
 
 I borrowed some commands from github.com/bryanl/consulcli and added them to consul_visa. A list of consul visa commands:
 
+```
   NAME:
     consul_visa - access consul_servant cluster from the command line
 
@@ -50,7 +51,7 @@ I borrowed some commands from github.com/bryanl/consulcli and added them to cons
   GLOBAL OPTIONS:
     --help, -h		show help
     --version, -v	print the version
-
+```
 
 # Low level use
 
