@@ -72,6 +72,20 @@ The job will be runned in any of the 4 nodes in the cluster. To see job executio
 ./consul_visa show job1
 ```
 
+If you wish to schedule the job to node1 use:
+
+
+```
+./consul_visa start -n node1 -c "echo hello world" job1
+
+```
+
+If you wish to schedule the job to all cluster nodes use:
+
+```
+./consul_visa start -all -c "echo hello world" job1
+```
+
 I borrowed some commands from github.com/bryanl/consulcli and added them to consul_visa. A list of consul visa commands:
 
 ```
