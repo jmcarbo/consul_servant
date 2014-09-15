@@ -1,5 +1,13 @@
-build: main.go
-	gox -output "bin/{{.Dir}}_{{.OS}}_{{.Arch}}" -os "linux darwin" -arch "amd64"
+SUBDIRS = consul_servant consul_visa
+      
+.PHONY: subdirs $(SUBDIRS)
+		      
+subdirs: $(SUBDIRS)
+	
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+build_docker:
 	docker build -t jmcarbo/consul_servant .
 
 start_cluster:

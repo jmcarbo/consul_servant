@@ -1,2 +1,6 @@
 consul
 data/*
+consul_config/*
+consul_data/*
+consul_ui/*
+run/*

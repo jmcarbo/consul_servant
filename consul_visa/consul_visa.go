@@ -120,7 +120,9 @@ func main() {
             u, _:=uuid.NewV4()
             id = u.String()
           }
-          jsn := fmt.Sprintf("{ \"ID\": \"%s\", \"Command\": \"%s\" }", id, c.String("command"))
+          jt := job.NewJobTemplate("at", c.String("command"))
+          command, _ := jt.Instantiate()
+          jsn := fmt.Sprintf("{ \"ID\": \"%s\", \"Command\": \"%s\" }", id, command)
           if c.Bool("all") == true {
             members, err := agent.Members(false)
             if err != nil {
