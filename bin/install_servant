@@ -4,19 +4,17 @@ if [[ "$unamestr" == 'Linux' ]]
 then
   echo "Linux detected"
   wget -nc -q https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip; 
-  wget -nc -q https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_servant_linux_amd64
-  chmod +x consul_servant_linux_amd64
-  mv consul_servant_linux_amd64 consul_servant
-  wget -nc -q https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_visa_linux_amd64
-  chmod +x consul_visa_linux_amd64
-  mv consul_visa_linux_amd64 consul_visa
+  curl -o consul_servant -s https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/consul_servant_linux_amd64
+  chmod +x consul_servant
+  curl -o consul_visa -s https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/consul_visa_linux_amd64
+  chmod +x consul_visa
 elif [[ "$unamestr" == 'Darwin' ]] 
 then 
   echo "Darwin detected"
   wget -nc -q -O consul.zip https://dl.bintray.com/mitchellh/consul/0.4.0_darwin_amd64.zip
-  curl -o consul_servant -s https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_servant_darwin_amd64
+  curl -o consul_servant -s https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/consul_servant_darwin_amd64
   chmod +x consul_servant
-  curl -o consul_visa -s https://github.com/jmcarbo/consul_servant/raw/master/bin/consul_visa_darwin_amd64
+  curl -o consul_visa -s https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/consul_visa_darwin_amd64
   chmod +x consul_visa
 fi; 
 
