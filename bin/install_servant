@@ -3,7 +3,7 @@ echo "Installing consul_servant"
 if [[ "$unamestr" == 'Linux' ]] 
 then
   echo "Linux detected"
-  wget -nc -q https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip; 
+  wget -nc -q -O consul.zip https://dl.bintray.com/mitchellh/consul/0.4.0_linux_amd64.zip; 
   curl -o consul_servant -s https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/consul_servant_linux_amd64
   chmod +x consul_servant
   curl -o consul_visa -s https://raw.githubusercontent.com/jmcarbo/consul_servant/master/bin/consul_visa_linux_amd64
