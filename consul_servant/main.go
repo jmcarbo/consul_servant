@@ -100,6 +100,14 @@ func launchConsul(c *cli.Context) {
     options=append(options,"-config-dir")
     options=append(options,c.String("config-dir"))
   }
+  if c.String("dc")!="" {
+    options=append(options,"-dc")
+    options=append(options,c.String("dc"))
+  }
+  if c.String("encrypt")!="" {
+    options=append(options,"-encrypt")
+    options=append(options,c.String("encrypt"))
+  }
   if c.String("join") == "" {
     options=append(options,"-server")
     options=append(options,"-bootstrap")
@@ -360,6 +368,16 @@ func main() {
       Name: "config-dir",
       Value: "",
       Usage: "pass config-dir option to consul agent",
+    },
+    cli.StringFlag{
+      Name: "dc",
+      Value: "",
+      Usage: "set datacenter",
+    },
+    cli.StringFlag{
+      Name: "encrypt",
+      Value: "",
+      Usage: "set consul gossip encryption key",
     },
     cli.BoolFlag{
       Name: "server,s",
